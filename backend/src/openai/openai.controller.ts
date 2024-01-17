@@ -8,12 +8,11 @@ export class OpenaiController {
   // Testing
   @Get('chat')
   async getChatCompletions() {
-    const deploymentId = process.env.MODEL_DEPLOYMENT_NAME;
     const messages = [
       { role: 'system', content: 'You are a helpful assistant.' },
       { role: 'user', content: 'What is the meaning of Digital Services ?' },
     ];
 
-    return await this.openaiService.getChatCompletions(deploymentId, messages);
+    return await this.openaiService.getChatCompletions(messages);
   }
 }
