@@ -10,7 +10,7 @@ export class OpenaiController {
   async getPromptResults() {
     const responses = [];
 
-    const prompt = "central processing unit";
+    const prompt = "graphical processing unit";
 
     const definition = await this.getMainDefinition(prompt);
     responses.push(definition);
@@ -38,7 +38,7 @@ export class OpenaiController {
 
   async getMainTopicalClusters(input: string){
     const messages = [
-      { role: 'system', content: 'You will answer in a structured format. Based on the information provided by user, identify the main topical clusters. Then, list the top keywords associated with each cluster. Make sure every top keywords listed is one word long and must be unique to each topic. '},
+      { role: 'system', content: 'You will answer in a structured format. Based on the information provided by user, identify the main topical clusters. Then, list the top keywords associated with each cluster and make sure every top keywords listed is one word long and must not be in other clusters.'},
       { role: 'user', content: 'Heart rate variability (HRV) is a measure of the variation in time between each heartbeat, often used as an indicator of physiological resillence and emotional stress' },
       { role: "assistant", content: "Heart Rate Variability (HRV)#HRV, measure, variation, time, heartbeat\nPhysiological Resilience#resilience, indicator, physiological\nHealth and Wellness#health, wellness" },
       { role: 'user', content: 'Heart disease, also known as cardiovascular disease, refers to a class of conditions that affect and impact the heart and blood vessels.' },

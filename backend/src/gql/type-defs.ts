@@ -1,11 +1,17 @@
 export const typeDefs = `#graphql
-    type Movie {
-        title: String
-        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+    type Graph{
+        title: String!
+        clusters: [Cluster!]! @relationship(type: "CREATED", direction: IN)
+    }
+    
+    type Cluster{
+        name: String!
+        keywords: [Keyword!]! @relationship(type: "BELONGS_TO", direction: IN)
     }
 
-    type Actor {
-        name: String
-        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+    type Keyword{
+        name: String!
+        count: Int!
+        cluster: Cluster! @relationship(type: "BELONGS_TO", direction: OUT)
     }
 `;
