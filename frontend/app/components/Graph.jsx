@@ -2,8 +2,15 @@
 import React from "react";
 import { useEffect } from "react";
 import Graph from "graphology";
-import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
+import {
+  ControlsContainer,
+  FullScreenControl,
+  SigmaContainer,
+  ZoomControl,
+  useLoadGraph,
+} from "@react-sigma/core";
 import "@react-sigma/core/lib/react-sigma.min.css";
+import Prompt from "./Prompt";
 
 export const LoadGraph = () => {
   const loadGraph = useLoadGraph();
@@ -42,6 +49,7 @@ export const DisplayGraph = () => {
       }}
     >
       <LoadGraph />
+      <Prompt />
     </SigmaContainer>
   );
 };
