@@ -28,7 +28,17 @@ export const DisplayGraph = () => {
   return (
     <SigmaContainer
       style={{
-        backgroundColor: "#D3D3D3",
+        backgroundColor: "#121112",
+      }}
+      settings={{
+        labelColor: {
+          color: "white",
+        },
+        hoverRenderer: (context, data, settings) => {
+          settings.labelColor = {
+            color: "white",
+          };
+        },
       }}
     >
       <LoadGraph />
