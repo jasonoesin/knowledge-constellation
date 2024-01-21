@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { OpenaiService } from './openai.service';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
 
@@ -8,12 +8,11 @@ export class OpenaiController {
     private readonly openaiService: OpenaiService,
     private readonly neo4jService: Neo4jService,) {}
 
-  // Testing
-  @Get('prompt')
-  async getPromptResults() {
+  @Post('prompt')
+  async getPromptResults(@Body() payload: { keyword: string }) {
     const responses = [];
 
-    const prompt = "motherboard";
+    const prompt = payload.keyword;
 
     const definition = await this.getMainDefinition(prompt);
     responses.push(definition);
@@ -26,18 +25,11 @@ export class OpenaiController {
     return responses;
   }
 
-  async importData(cypherQuery : string): Promise<void> {
-    // Clean Data First Before Importing
-    this.neo4jService.deleteData();
-
-    await this.neo4jService.importData(cypherQuery);
-  }
-
-  @Get('prompt_update')
-  async getPromptUpdateResults() {
+  @Post('prompt_update')
+  async getPromptUpdateResults(@Body() payload: { keyword: string }) {
     const responses = [];
 
-    const prompt = "motherboard";
+    const prompt = payload.keyword;
 
     const definition = await this.getMainDefinition(prompt);
     responses.push(definition);
@@ -52,6 +44,12 @@ export class OpenaiController {
     return responses;
   }
 
+  async importData(cypherQuery : string): Promise<void> {
+    this.neo4jService.deleteData();
+
+    await this.neo4jService.importData(cypherQuery);
+  }
+
   @Get('cypher')
   async getCypherScript(){
     return this.neo4jService.getCypherScript();
@@ -60,7 +58,7 @@ export class OpenaiController {
   async getMainDefinition(input: string){
     const messages = [
       {role: 'system', content: "You are a helpful assistant. You will answer the definition from inputs provided by user short and brief."},
-      { role: 'user', content: input }
+      {role: 'user', content: input }
     ]
 
     return await this.openaiService.getChatCompletions(messages);
