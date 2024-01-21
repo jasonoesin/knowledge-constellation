@@ -15,6 +15,16 @@ const Sidebar = ({ linksData, nodesData }) => {
     return acc;
   }, {});
 
+  const relationMap = linksData.reduce((acc, link) => {
+    const relation = link.name;
+
+    acc[relation] = {
+      count: (acc[relation]?.count || 0) + 1,
+    };
+
+    return acc;
+  }, {});
+
   const legends = Object.entries(categoryMap).map(([category, data]) => (
     <div key={category} className="flex items-center">
       <div
@@ -25,9 +35,11 @@ const Sidebar = ({ linksData, nodesData }) => {
     </div>
   ));
 
-  const relationships = linksData.map((link) => (
-    <div className="bg-gray-500 rounded px-2">{link.name}</div>
-  ));
+  const relationships = Object.entries(relationMap).map(
+    ([relationship, data]) => (
+      <div className="bg-gray-500 rounded px-2">{`${relationship} (${data.count})`}</div>
+    )
+  );
 
   return (
     <div
