@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import Prompt from "./Prompt";
 import { ForceGraph } from "./ForceGraph";
-import { result } from "lodash";
 
 export const DisplayGraph = () => {
   const [data, setData] = useState(null);
@@ -60,7 +59,7 @@ const toGraphData = (data) => {
     name: obj.r.type,
     source: obj.r.startNodeElementId,
     target: obj.r.endNodeElementId,
-    distance: obj.r.type.length * 13,
+    distance: obj.r.type.length * 10,
   }));
 
   const removeDuplicateNodes = (nodes) => {

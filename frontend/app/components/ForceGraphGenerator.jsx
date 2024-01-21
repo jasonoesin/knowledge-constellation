@@ -60,8 +60,8 @@ export function RunForceGraph(
         })
     )
     .force("charge", d3.forceManyBody().strength(-5000))
-    .force("x", d3.forceX())
-    .force("y", d3.forceY());
+    .force("x", d3.forceX(0))
+    .force("y", d3.forceY(-125));
 
   const svg = d3
     .select(container)
@@ -113,6 +113,7 @@ export function RunForceGraph(
     .append("text")
     .attr("class", "link-label")
     .text((d) => d.name)
+    .classed("text-[0.75rem]", true)
     .attr("text-anchor", "middle")
     .attr("dy", "-1em")
     .classed("fill-white", true)
@@ -138,19 +139,50 @@ export function RunForceGraph(
     .attr("stroke-width", (d) => Math.sqrt(d.value))
     .attr("marker-end", "url(#arrowhead)");
 
-  const node = svg
+  const nodeGroup = svg
     .append("g")
     .classed("nodes", true)
     .attr("stroke", "#fff")
     .attr("stroke-width", 2)
-    .selectAll("circle")
+    .selectAll("g")
     .data(nodes)
-    .join("circle")
-    .attr("r", 32)
-    .attr("fill", color)
-    .attr("fill", (d) => colorScale(d.labels[0]))
+    .join("g")
+    .classed("node-group", true)
     .classed("cursor-pointer", true)
     .call(drag(simulation));
+
+  const node = nodeGroup
+    .append("circle")
+    .attr("r", 35)
+    .attr("fill", (d) => colorScale(d.labels[0]));
+
+  const nodeLabel = nodeGroup
+    .append("text")
+    .attr("class", "node-label")
+    .attr("stroke-width", 0)
+    .classed("text-[0.75rem]", true)
+    .text((d) => {
+      const capitalizedName = d.name
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+      const radius = 32;
+      const maxLength = radius * 2 - 10;
+      return truncateText(capitalizedName, maxLength);
+    })
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .classed("fill-white", true);
+
+  function truncateText(text, maxLength) {
+    if (text.length > maxLength / 6) {
+      const truncatedText = text.slice(0, maxLength / 6 - 1) + "…";
+      return truncatedText;
+    } else {
+      return text;
+    }
+  }
 
   simulation.on("tick", () => {
     link
@@ -162,6 +194,14 @@ export function RunForceGraph(
     node
       .attr("cx", (d) => d.x)
       .attr("cy", (d) => {
+        let maxDragHeight = (height / 2) * 0.5;
+        if (d.y >= maxDragHeight) return maxDragHeight;
+        else return d.y;
+      });
+
+    nodeLabel
+      .attr("x", (d) => d.x)
+      .attr("y", (d) => {
         let maxDragHeight = (height / 2) * 0.5;
         if (d.y >= maxDragHeight) return maxDragHeight;
         else return d.y;
