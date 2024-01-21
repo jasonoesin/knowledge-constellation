@@ -57,8 +57,8 @@ export function ForceGraph({ linksData, nodesData }) {
             d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
           />
         </svg>
-        {sidebarOpen && <Sidebar nodesData={nodesData} linksData={linksData} />}
       </div>
+      {sidebarOpen && <Sidebar nodesData={nodesData} linksData={linksData} />}
     </div>
   );
 }
