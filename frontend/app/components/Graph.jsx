@@ -60,6 +60,7 @@ const toGraphData = (data) => {
     name: obj.r.type,
     source: obj.r.startNodeElementId,
     target: obj.r.endNodeElementId,
+    distance: obj.r.type.length * 13,
   }));
 
   const removeDuplicateNodes = (nodes) => {

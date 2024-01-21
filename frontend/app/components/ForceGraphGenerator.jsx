@@ -28,8 +28,11 @@ export function RunForceGraph(
     }
 
     function dragged(event) {
+      let maxDragHeight = (height / 2) * 0.5;
+      if (event.y >= maxDragHeight) event.subject.fy = maxDragHeight;
+      else event.subject.fy = event.y;
+
       event.subject.fx = event.x;
-      event.subject.fy = event.y;
     }
 
     function dragended(event) {
@@ -52,7 +55,9 @@ export function RunForceGraph(
       d3
         .forceLink(links)
         .id((d) => d.id)
-        .distance(300)
+        .distance(function (link) {
+          return link.distance;
+        })
     )
     .force("charge", d3.forceManyBody().strength(-5000))
     .force("x", d3.forceX())
@@ -62,6 +67,21 @@ export function RunForceGraph(
     .select(container)
     .append("svg")
     .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+  svg
+    .append("defs")
+    .append("marker")
+    .attr("id", "arrowhead")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 38)
+    .attr("refY", 0)
+    .attr("fill", "white")
+    .attr("markerWidth", 12)
+    .attr("markerHeight", 12)
+    .attr("orient", "auto")
+    .append("path")
+    .attr("d", "M0,-5L10,0L0,5")
+    .attr("class", "arrowhead");
 
   const zoom = d3
     .zoom()
@@ -107,6 +127,7 @@ export function RunForceGraph(
 
       return `rotate(${adjustedAngle},${(d.source.x + d.target.x) / 2},${(d.source.y + d.target.y) / 2})`;
     });
+
   const link = linkGroup
     .selectAll("line")
     .data(links)
@@ -114,7 +135,8 @@ export function RunForceGraph(
     .append("line")
     .attr("stroke", "#999")
     .attr("stroke-opacity", 0.6)
-    .attr("stroke-width", (d) => Math.sqrt(d.value));
+    .attr("stroke-width", (d) => Math.sqrt(d.value))
+    .attr("marker-end", "url(#arrowhead)");
 
   const node = svg
     .append("g")
@@ -137,7 +159,13 @@ export function RunForceGraph(
       .attr("x2", (d) => d.target.x)
       .attr("y2", (d) => d.target.y);
 
-    node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+    node
+      .attr("cx", (d) => d.x)
+      .attr("cy", (d) => {
+        let maxDragHeight = (height / 2) * 0.5;
+        if (d.y >= maxDragHeight) return maxDragHeight;
+        else return d.y;
+      });
 
     linkLabel
       .attr("x", (d) => (d.source.x + d.target.x) / 2)
