@@ -1,12 +1,6 @@
 import * as d3 from "d3";
-import styles from "../styles/forceGraph.module.css";
 
-export function RunForceGraph(
-  container,
-  linksData,
-  nodesData,
-  nodeHoverTooltip
-) {
+export function RunForceGraph(container, linksData, nodesData) {
   const links = linksData.map((d) => Object.assign({}, d));
   const nodes = nodesData.map((d) => Object.assign({}, d));
 
@@ -15,10 +9,6 @@ export function RunForceGraph(
   const width = containerRect.width;
 
   const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-  const color = () => {
-    return "#ffffff";
-  };
 
   const drag = (simulation) => {
     function dragstarted(event) {

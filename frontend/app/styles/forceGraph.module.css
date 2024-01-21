@@ -4,6 +4,7 @@
     position: relative;
     background-color: #111111;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6);
+    transition: width 0.3s ease;
   }
   
 .container svg {
@@ -12,14 +13,15 @@
     height: 100%;
 }
 
-div.tooltip {
-    position: absolute;
-    text-align: center;
-    width: 110px;
-    padding: 10px;
-    font: 12px sans-serif;
-    background: lightsteelblue;
-    border: 0;
-    border-radius: 8px;
-    pointer-events: none;
+.containerShifted {
+    width: calc(100% - 25rem);
+    transition: width 0.3s ease; 
+}
+
+.icon {
+    transition: left 0.325s ease; 
+}
+
+.iconShifted {
+    left: calc(100% - 27.5rem);
 }
