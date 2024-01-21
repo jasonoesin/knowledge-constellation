@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { runForceGraph } from "./forceGraphGenerator";
+import { RunForceGraph } from "./ForceGraphGenerator";
 import styles from "../styles/forceGraph.module.css";
 
 export function ForceGraph({ linksData, nodesData, nodeHoverTooltip }) {
@@ -12,7 +12,7 @@ export function ForceGraph({ linksData, nodesData, nodeHoverTooltip }) {
     let destroyFn;
 
     if (containerRef.current) {
-      const { destroy } = runForceGraph(
+      const { destroy } = RunForceGraph(
         containerRef.current,
         linksData,
         nodesData,
