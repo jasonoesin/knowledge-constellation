@@ -5,8 +5,7 @@ import styles from "../styles/forceGraph.module.css";
 
 export function ForceGraph({ linksData, nodesData, nodeHoverTooltip }) {
   const containerRef = useRef(null);
-
-  console.log("ForceGraph", nodesData);
+  console.log(linksData, nodesData);
 
   useEffect(() => {
     let destroyFn;

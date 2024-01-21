@@ -7,12 +7,14 @@ export function RunForceGraph(
   nodesData,
   nodeHoverTooltip
 ) {
-  const links = [];
+  const links = linksData.map((d) => Object.assign({}, d));
   const nodes = nodesData.map((d) => Object.assign({}, d));
 
   const containerRect = container.getBoundingClientRect();
   const height = containerRect.height;
   const width = containerRect.width;
+
+  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
   const color = () => {
     return "#ffffff";
@@ -47,9 +49,12 @@ export function RunForceGraph(
     .forceSimulation(nodes)
     .force(
       "link",
-      d3.forceLink(links).id((d) => d.id)
+      d3
+        .forceLink(links)
+        .id((d) => d.id)
+        .distance(300)
     )
-    .force("charge", d3.forceManyBody().strength(-150))
+    .force("charge", d3.forceManyBody().strength(-5000))
     .force("x", d3.forceX())
     .force("y", d3.forceY());
 
@@ -66,6 +71,8 @@ export function RunForceGraph(
     ])
     .on("zoom", function (event) {
       d3.select(".nodes").attr("transform", event.transform);
+      d3.select(".links").attr("transform", event.transform);
+      d3.select(".link-labels").attr("transform", event.transform);
     });
 
   d3.select("svg").call(zoom);
@@ -76,16 +83,38 @@ export function RunForceGraph(
       .call(zoom.translateTo, width / 2, height / 2);
   }
 
-  const link = svg
-    .append("g")
-    .attr("stroke", "#999")
-    .attr("stroke-opacity", 0.6)
+  const linkGroup = svg.append("g").classed("links", true);
+  const linkLabelGroup = svg.append("g").classed("link-labels", true);
+
+  const linkLabel = linkLabelGroup
+    .selectAll("text")
+    .data(links)
+    .enter()
+    .append("text")
+    .attr("class", "link-label")
+    .text((d) => d.name)
+    .attr("text-anchor", "middle")
+    .attr("dy", "-1em")
+    .classed("fill-white", true)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
+    .attr("transform", function (d) {
+      const angle =
+        (Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x) * 180) /
+        Math.PI;
+
+      const adjustedAngle = d.target.x > d.source.x ? angle : angle + 180;
+
+      return `rotate(${adjustedAngle},${(d.source.x + d.target.x) / 2},${(d.source.y + d.target.y) / 2})`;
+    });
+  const link = linkGroup
     .selectAll("line")
     .data(links)
-    .join("line")
+    .enter()
+    .append("line")
+    .attr("stroke", "#999")
+    .attr("stroke-opacity", 0.6)
     .attr("stroke-width", (d) => Math.sqrt(d.value));
-
-  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
   const node = svg
     .append("g")
@@ -95,7 +124,7 @@ export function RunForceGraph(
     .selectAll("circle")
     .data(nodes)
     .join("circle")
-    .attr("r", 12)
+    .attr("r", 32)
     .attr("fill", color)
     .attr("fill", (d) => colorScale(d.labels[0]))
     .classed("cursor-pointer", true)
@@ -109,6 +138,19 @@ export function RunForceGraph(
       .attr("y2", (d) => d.target.y);
 
     node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+
+    linkLabel
+      .attr("x", (d) => (d.source.x + d.target.x) / 2)
+      .attr("y", (d) => (d.source.y + d.target.y) / 2)
+      .attr("transform", function (d) {
+        const angle =
+          (Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x) * 180) /
+          Math.PI;
+
+        const adjustedAngle = d.target.x > d.source.x ? angle : angle + 180;
+
+        return `rotate(${adjustedAngle},${(d.source.x + d.target.x) / 2},${(d.source.y + d.target.y) / 2})`;
+      });
   });
 
   return {

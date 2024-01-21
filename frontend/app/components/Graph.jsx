@@ -25,8 +25,7 @@ export const DisplayGraph = () => {
         }
 
         const result = await response.json();
-        console.log(toGraphData(result));
-        setData(result);
+        setData(toGraphData(result));
       } catch (err) {
         if (isMounted) {
           setError(err);
@@ -43,7 +42,7 @@ export const DisplayGraph = () => {
 
   return (
     <>
-      {data && <ForceGraph nodesData={toGraphData(data)} />}
+      {data && <ForceGraph nodesData={data.nodes} linksData={data.links} />}
       <Prompt />
     </>
   );
@@ -57,5 +56,44 @@ const toGraphData = (data) => {
     name: obj.n.properties.name,
   }));
 
-  return nodes;
+  const links = data.map((obj) => ({
+    name: obj.r.type,
+    source: obj.r.startNodeElementId,
+    target: obj.r.endNodeElementId,
+  }));
+
+  const removeDuplicateNodes = (nodes) => {
+    const uniqueNodes = [];
+    const nodeIds = new Set();
+
+    nodes.forEach((node) => {
+      if (!nodeIds.has(node.id)) {
+        uniqueNodes.push(node);
+        nodeIds.add(node.id);
+      }
+    });
+
+    return uniqueNodes;
+  };
+
+  const removeDuplicateLinks = (links) => {
+    const uniqueLinks = [];
+    const linkSet = new Set();
+
+    links.forEach((link) => {
+      const key = `${link.source}-${link.target}`;
+
+      if (!linkSet.has(key)) {
+        uniqueLinks.push(link);
+        linkSet.add(key);
+      }
+    });
+
+    return uniqueLinks;
+  };
+
+  return {
+    nodes: removeDuplicateNodes(nodes),
+    links: removeDuplicateLinks(links),
+  };
 };
