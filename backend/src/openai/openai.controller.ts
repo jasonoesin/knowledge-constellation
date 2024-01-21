@@ -20,7 +20,7 @@ export class OpenaiController {
     const cypherQuery = await this.getImportCypherQuery(definition.choices[0].message.content);
     responses.push(cypherQuery);
 
-    this.importData(cypherQuery.choices[0].message.content)
+    await this.importData(cypherQuery.choices[0].message.content)
 
     return responses;
   }
@@ -39,7 +39,7 @@ export class OpenaiController {
     const cypherQuery = await this.getUpdateCypherQuery(definition.choices[0].message.content, cypherSchema);
     responses.push(cypherQuery);
 
-    this.importData(cypherQuery.choices[0].message.content)
+    await this.importData(cypherQuery.choices[0].message.content)
 
     return responses;
   }

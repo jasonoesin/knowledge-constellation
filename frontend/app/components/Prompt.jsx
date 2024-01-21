@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Prompt = () => {
+const Prompt = ({ onResults }) => {
   const [definition, setDefinition] = useState(null);
   const [keyword, setKeyword] = useState("");
 
@@ -25,7 +25,7 @@ const Prompt = () => {
 
       const data = await response.json();
       setDefinition(data);
-      console.log(data);
+      onResults(data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

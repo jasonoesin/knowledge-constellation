@@ -18,11 +18,13 @@ export function RunForceGraph(container, linksData, nodesData) {
     }
 
     function dragged(event) {
-      let maxDragHeight = (height / 2) * 0.5;
-      if (event.y >= maxDragHeight) event.subject.fy = maxDragHeight;
-      else event.subject.fy = event.y;
+      // need fix
+      //   let maxDragHeight = (height / 2) * 0.5;
+      //   if (event.y >= maxDragHeight) event.subject.fy = maxDragHeight;
+      //   else event.subject.fy = event.y;
 
       event.subject.fx = event.x;
+      event.subject.fy = event.y;
     }
 
     function dragended(event) {
@@ -51,7 +53,7 @@ export function RunForceGraph(container, linksData, nodesData) {
     )
     .force("charge", d3.forceManyBody().strength(-5000))
     .force("x", d3.forceX(0))
-    .force("y", d3.forceY(-125));
+    .force("y", d3.forceY(-100));
 
   const svg = d3
     .select(container)
@@ -184,17 +186,23 @@ export function RunForceGraph(container, linksData, nodesData) {
     node
       .attr("cx", (d) => d.x)
       .attr("cy", (d) => {
-        let maxDragHeight = (height / 2) * 0.5;
-        if (d.y >= maxDragHeight) return maxDragHeight;
-        else return d.y;
+        // need fix
+        // let maxDragHeight = (height / 2) * 0.5;
+        // if (d.y >= maxDragHeight) return maxDragHeight;
+        // else return d.y;
+
+        return d.y;
       });
 
     nodeLabel
       .attr("x", (d) => d.x)
       .attr("y", (d) => {
-        let maxDragHeight = (height / 2) * 0.5;
-        if (d.y >= maxDragHeight) return maxDragHeight;
-        else return d.y;
+        // need fix
+        // let maxDragHeight = (height / 2) * 0.5;
+        // if (d.y >= maxDragHeight) return maxDragHeight;
+        // else return d.y;
+
+        return d.y;
       });
 
     linkLabel
@@ -214,6 +222,8 @@ export function RunForceGraph(container, linksData, nodesData) {
   return {
     destroy: () => {
       simulation.stop();
+
+      d3.select("svg").remove();
     },
     nodes: () => {
       return svg.node();

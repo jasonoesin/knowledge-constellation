@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Prompt from "./Prompt";
 import { ForceGraph } from "./ForceGraph";
 
-export const DisplayGraph = () => {
+export const DisplayGraph = ({ onPromptResults }) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
@@ -37,12 +37,12 @@ export const DisplayGraph = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [onPromptResults]);
 
   return (
     <>
       {data && <ForceGraph nodesData={data.nodes} linksData={data.links} />}
-      <Prompt />
+      <Prompt onResults={onPromptResults} />
     </>
   );
 };
