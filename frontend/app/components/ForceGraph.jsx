@@ -5,7 +5,7 @@ import styles from "../styles/forceGraph.module.css";
 import Sidebar from "./Sidebar";
 import { Tooltip } from "./Tooltip";
 
-export function ForceGraph({ linksData, nodesData }) {
+export function ForceGraph({ linksData, nodesData, onResults }) {
   const containerRef = useRef(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [tooltip, setTooltip] = useState();
@@ -71,7 +71,13 @@ export function ForceGraph({ linksData, nodesData }) {
           />
         </svg>
       </div>
-      {sidebarOpen && <Sidebar nodesData={nodesData} linksData={linksData} />}
+      {sidebarOpen && (
+        <Sidebar
+          nodesData={nodesData}
+          linksData={linksData}
+          onResults={onResults}
+        />
+      )}
       <Tooltip data={tooltip} />
     </div>
   );

@@ -17,7 +17,7 @@ export const Tooltip = (props) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.2 }}
           exit={{ opacity: 0 }}
-          className="absolute z-[10] bottom-[4rem] left-[2rem] bg-[#1c1f21] w-[25rem]  h-fit rounded-xl shadow-md px-4 py-4 flex flex-col gap-2"
+          className="absolute z-[10] bottom-[2rem] left-[2rem] bg-[#1c1f21] w-[30rem] h-fit rounded-xl shadow-md px-4 py-4 flex flex-col gap-2"
         >
           <strong className="">Node Details</strong>
           <div

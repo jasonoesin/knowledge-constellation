@@ -1,6 +1,11 @@
+"use client";
 import * as d3 from "d3";
+import { useState } from "react";
+import CircleLoading from "./CircleLoading";
 
-const Sidebar = ({ linksData, nodesData }) => {
+const Sidebar = ({ linksData, nodesData, onResults }) => {
+  const [loading, setLoading] = useState(false);
+
   const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
   const categoryMap = nodesData.reduce((acc, node) => {
@@ -41,6 +46,34 @@ const Sidebar = ({ linksData, nodesData }) => {
     )
   );
 
+  const handleDeleteGraph = async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/openai/delete_graph",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      onResults(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       className={`fixed top-[2rem] right-0 w-[25rem] h-full bg-[#1c1f21] transition-all duration-300 ease-in-out`}
@@ -59,6 +92,17 @@ const Sidebar = ({ linksData, nodesData }) => {
           </div>
         </div>
       </div>
+
+      {loading ? (
+        <CircleLoading />
+      ) : (
+        <div
+          onClick={handleDeleteGraph}
+          className="fixed right-2 bottom-2 bg-blue-950 rounded px-2 py-1 cursor-pointer"
+        >
+          Delete Graph
+        </div>
+      )}
     </div>
   );
 };

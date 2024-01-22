@@ -41,7 +41,13 @@ export const DisplayGraph = ({ onPromptResults }) => {
 
   return (
     <>
-      {data && <ForceGraph nodesData={data.nodes} linksData={data.links} />}
+      {data && (
+        <ForceGraph
+          nodesData={data.nodes}
+          linksData={data.links}
+          onResults={onPromptResults}
+        />
+      )}
       <Prompt onResults={onPromptResults} />
     </>
   );
