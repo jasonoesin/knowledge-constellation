@@ -71,9 +71,37 @@ const Prompt = ({ graphState, setGraphState, onResults }) => {
     }
   };
 
-  useEffect(() => {
-    console.log("graphState changed:", graphState);
-  }, [graphState]);
+  const handleUpdateDefinition = async () => {
+    event.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/openai/prompt_update",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            definition: definition.choices[0].message.content,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      onResults(data);
+      setGraphState(true);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -122,12 +150,20 @@ const Prompt = ({ graphState, setGraphState, onResults }) => {
                 {loading ? (
                   <CircleLoading />
                 ) : graphState ? (
-                  <button
-                    className="w-fit px-4 bg-blue-950 rounded py-1.5"
-                    onClick={handleSaveDefinition}
-                  >
-                    Update knowledges
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      className="w-fit px-4 bg-blue-950 rounded py-1.5"
+                      onClick={handleUpdateDefinition}
+                    >
+                      Update knowledges
+                    </button>
+                    <button
+                      className="w-fit px-4 bg-blue-950 rounded py-1.5"
+                      onClick={handlePromptButton}
+                    >
+                      Generate another definition or detail
+                    </button>
+                  </div>
                 ) : (
                   <button
                     className="w-fit px-4 bg-blue-950 rounded py-1.5"

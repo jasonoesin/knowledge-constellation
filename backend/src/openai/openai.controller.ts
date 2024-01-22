@@ -30,22 +30,16 @@ export class OpenaiController {
   }
 
   @Post('prompt_update')
-  async postPromptUpdateResults(@Body() payload: { keyword: string }) {
-    const responses = [];
-
-    const prompt = payload.keyword;
-
-    const definition = await this.getMainDefinition(prompt);
-    responses.push(definition);
+  async postPromptUpdateResults(@Body() payload: { definition: string }) {
+    const definition = payload.definition;
 
     const cypherSchema = await this.neo4jService.getCypherScript();
 
-    const cypherQuery = await this.getUpdateCypherQuery(definition.choices[0].message.content, cypherSchema);
-    responses.push(cypherQuery);
+    const cypherQuery = await this.getUpdateCypherQuery(definition, cypherSchema);
 
     await this.importData(cypherQuery.choices[0].message.content)
 
-    return responses;
+    return cypherQuery;
   }
 
   async importData(cypherQuery : string): Promise<void> {
