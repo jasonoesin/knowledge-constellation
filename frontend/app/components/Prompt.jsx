@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import CircleLoading from "./CircleLoading";
 
 const Prompt = ({ onResults }) => {
   const [definition, setDefinition] = useState(null);
   const [keyword, setKeyword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleKeywordChange = (event) => {
     console.log(event.target.value);
@@ -10,6 +12,9 @@ const Prompt = ({ onResults }) => {
   };
 
   const handleButtonClick = async () => {
+    event.preventDefault();
+    setLoading(true);
+
     try {
       const response = await fetch("http://localhost:3001/openai/prompt", {
         method: "POST",
@@ -28,11 +33,13 @@ const Prompt = ({ onResults }) => {
       onResults(data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="!BACKGROUND w-full flex items-center fixed bottom-[4rem] justify-center pointer-events-none">
+    <form className="!BACKGROUND w-full flex items-center fixed bottom-[4rem] justify-center pointer-events-none">
       <div className="bg-[#1c1f21] px-4 py-4 rounded-xl w-[22rem] h-fit pointer-events-auto flex flex-col gap-3 shadow-2xl">
         <div className="">Write a keyword or an abstract of idea :</div>
 
@@ -44,18 +51,22 @@ const Prompt = ({ onResults }) => {
           onChange={handleKeywordChange}
         />
 
-        <button
-          className="w-fit px-6 bg-blue-950 rounded py-1.5"
-          onClick={handleButtonClick}
-        >
-          Prompt to LLM
-        </button>
+        {loading ? (
+          <CircleLoading />
+        ) : (
+          <button
+            className="w-fit px-6 bg-blue-950 rounded py-1.5"
+            onClick={handleButtonClick}
+          >
+            Prompt to LLM
+          </button>
+        )}
         {/* 
         {definition && (
           <div className="mt-3 text-white">Definition: {definition}</div>
         )} */}
       </div>
-    </div>
+    </form>
   );
 };
 
