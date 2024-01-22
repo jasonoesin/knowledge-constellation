@@ -1,4 +1,13 @@
+import { AnimatePresence, motion } from "framer-motion";
+
 export const Tooltip = (props) => {
+  const data = props.data;
+
+  if (data == null) return;
+
+  const category = data.labels[0];
+  const color = data.color;
+
   return (
     <AnimatePresence>
       {props.data && (
@@ -8,10 +17,26 @@ export const Tooltip = (props) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.2 }}
           exit={{ opacity: 0 }}
-          className="absolute z-[10] bottom-[2rem] right-[2rem] bg-white w-[20rem] h-[8rem] rounded shadow-md px-4 py-2"
+          className="absolute z-[10] bottom-[4rem] left-[2rem] bg-[#1c1f21] w-[25rem]  h-fit rounded-xl shadow-md px-4 py-4 flex flex-col gap-2"
         >
-          <div className="">{props.data.title}</div>
-          <div className="">{props.data.description}</div>
+          <strong className="">Node Details</strong>
+          <div
+            style={{ backgroundColor: color }}
+            className="w-fit px-3 py-1 rounded-full"
+          >
+            {category}
+          </div>
+          <strong className="">Properties</strong>
+          <div className="flex gap-1 flex-col">
+            {Object.entries(data.properties).map(([key, value]) => (
+              <div key={key} className="">
+                <strong className="bg-[#333336] rounded-full px-3 py-1 w-fit mr-2 h-fit">
+                  {key}
+                </strong>
+                : {value}
+              </div>
+            ))}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

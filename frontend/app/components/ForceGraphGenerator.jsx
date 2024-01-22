@@ -1,6 +1,12 @@
 import * as d3 from "d3";
 
-export function RunForceGraph(container, linksData, nodesData) {
+export function RunForceGraph(
+  container,
+  linksData,
+  nodesData,
+  handleSetTooltip,
+  handleSetNoneTooltip
+) {
   const links = linksData.map((d) => Object.assign({}, d));
   const nodes = nodesData.map((d) => Object.assign({}, d));
 
@@ -131,6 +137,16 @@ export function RunForceGraph(container, linksData, nodesData) {
     .attr("stroke-width", (d) => Math.sqrt(d.value))
     .attr("marker-end", "url(#arrowhead)");
 
+  function handleMouseEnter(event, d) {
+    d.color = d3.select(this).select("circle").attr("fill");
+
+    handleSetTooltip(d);
+  }
+
+  function handleMouseLeave(event, d) {
+    handleSetNoneTooltip();
+  }
+
   const nodeGroup = svg
     .append("g")
     .classed("nodes", true)
@@ -141,6 +157,8 @@ export function RunForceGraph(container, linksData, nodesData) {
     .join("g")
     .classed("node-group", true)
     .classed("cursor-pointer", true)
+    .on("mouseenter", handleMouseEnter)
+    .on("mouseleave", handleMouseLeave)
     .call(drag(simulation));
 
   const node = nodeGroup

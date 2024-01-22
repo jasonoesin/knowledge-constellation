@@ -33,7 +33,7 @@ const Prompt = ({ onResults }) => {
 
   return (
     <div className="!BACKGROUND w-full flex items-center fixed bottom-[4rem] justify-center pointer-events-none">
-      <div className="bg-[#1c1f21] px-4 py-4 rounded w-[22rem] h-fit pointer-events-auto flex flex-col gap-3 shadow-2xl">
+      <div className="bg-[#1c1f21] px-4 py-4 rounded-xl w-[22rem] h-fit pointer-events-auto flex flex-col gap-3 shadow-2xl">
         <div className="">Write a keyword or an abstract of idea :</div>
 
         <input

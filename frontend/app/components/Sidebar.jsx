@@ -37,7 +37,10 @@ const Sidebar = ({ linksData, nodesData }) => {
 
   const relationships = Object.entries(relationMap).map(
     ([relationship, data]) => (
-      <div className="bg-gray-500 rounded px-2">{`${relationship} (${data.count})`}</div>
+      <div
+        key={relationship}
+        className="bg-gray-500 rounded px-2"
+      >{`${relationship} (${data.count})`}</div>
     )
   );
 

@@ -10,11 +10,9 @@ export function ForceGraph({ linksData, nodesData }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [tooltip, setTooltip] = useState();
 
-  const handleSetTooltip = (title, description) => {
-    setTooltip({
-      title: title,
-      description: description,
-    });
+  const handleSetTooltip = (obj) => {
+    console.log(obj);
+    setTooltip(obj);
   };
 
   const handleSetNoneTooltip = () => {
@@ -32,7 +30,9 @@ export function ForceGraph({ linksData, nodesData }) {
       const { destroy } = RunForceGraph(
         containerRef.current,
         linksData,
-        nodesData
+        nodesData,
+        handleSetTooltip,
+        handleSetNoneTooltip
       );
       destroyFn = destroy;
     }
@@ -72,7 +72,7 @@ export function ForceGraph({ linksData, nodesData }) {
         </svg>
       </div>
       {sidebarOpen && <Sidebar nodesData={nodesData} linksData={linksData} />}
-      {/* <Tooltip data={tooltip} /> */}
+      <Tooltip data={tooltip} />
     </div>
   );
 }
