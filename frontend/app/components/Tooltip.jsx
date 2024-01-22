@@ -3,8 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 export const Tooltip = (props) => {
   const data = props.data;
 
-  console.log(data);
-
   if (data == null) return;
 
   const category = data.labels[0];

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CircleLoading from "./CircleLoading";
 import { AnimatePresence, motion } from "framer-motion";
+import GraphPage from "../page";
 
-const Prompt = ({ onResults }) => {
+const Prompt = ({ graphState, setGraphState, onResults }) => {
   const [definition, setDefinition] = useState(null);
   const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -62,12 +63,17 @@ const Prompt = ({ onResults }) => {
 
       const data = await response.json();
       onResults(data);
+      setGraphState(true);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log("graphState changed:", graphState);
+  }, [graphState]);
 
   return (
     <AnimatePresence>
@@ -115,12 +121,19 @@ const Prompt = ({ onResults }) => {
 
                 {loading ? (
                   <CircleLoading />
+                ) : graphState ? (
+                  <button
+                    className="w-fit px-4 bg-blue-950 rounded py-1.5"
+                    onClick={handleSaveDefinition}
+                  >
+                    Update knowledges
+                  </button>
                 ) : (
                   <button
                     className="w-fit px-4 bg-blue-950 rounded py-1.5"
                     onClick={handleSaveDefinition}
                   >
-                    Save knowledge to graph
+                    Save knowledges to graph
                   </button>
                 )}
               </>

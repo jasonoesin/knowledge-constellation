@@ -7,6 +7,7 @@ import { ForceGraph } from "./ForceGraph";
 export const DisplayGraph = ({ onPromptResults }) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [graphState, setGraphState] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -25,6 +26,8 @@ export const DisplayGraph = ({ onPromptResults }) => {
 
         const result = await response.json();
         setData(toGraphData(result));
+        if (result.length == 0) setGraphState(false);
+        else setGraphState(true);
       } catch (err) {
         if (isMounted) {
           setError(err);
@@ -48,7 +51,11 @@ export const DisplayGraph = ({ onPromptResults }) => {
           onResults={onPromptResults}
         />
       )}
-      <Prompt onResults={onPromptResults} />
+      <Prompt
+        setGraphState={setGraphState}
+        graphState={graphState}
+        onResults={onPromptResults}
+      />
     </>
   );
 };
