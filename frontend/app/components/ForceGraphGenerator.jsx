@@ -172,7 +172,7 @@ export function RunForceGraph(
     .attr("stroke-width", 0)
     .classed("text-[0.75rem]", true)
     .text((d) => {
-      if (!d.name) return null;
+      if (!d.name) return d.labels[0];
 
       const capitalizedName = d.name
         .split(" ")

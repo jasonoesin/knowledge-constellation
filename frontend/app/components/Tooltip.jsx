@@ -27,9 +27,9 @@ export const Tooltip = (props) => {
             {category}
           </div>
           <strong className="">Properties</strong>
-          <div className="flex gap-1 flex-col">
+          <div className="flex gap-2 flex-col">
             {Object.entries(data.properties).map(([key, value]) => (
-              <div key={key} className="">
+              <div className="">
                 <strong className="bg-[#333336] rounded-full px-3 py-1 w-fit mr-2 h-fit">
                   {key}
                 </strong>

@@ -37,10 +37,7 @@ const Sidebar = ({ linksData, nodesData }) => {
 
   const relationships = Object.entries(relationMap).map(
     ([relationship, data]) => (
-      <div
-        key={relationship}
-        className="bg-gray-500 rounded px-2"
-      >{`${relationship} (${data.count})`}</div>
+      <div className="bg-gray-500 rounded px-2">{`${relationship} (${data.count})`}</div>
     )
   );
 
@@ -49,7 +46,7 @@ const Sidebar = ({ linksData, nodesData }) => {
       className={`fixed top-[2rem] right-0 w-[25rem] h-full bg-[#1c1f21] transition-all duration-300 ease-in-out`}
     >
       <div className="p-4 text-white flex flex-col gap-4">
-        <p>Knowledge Graph Analytics Panel</p>
+        <strong>Knowledge Graph Analytics Panel</strong>
         <div className="">
           <p>Nodes Categories</p>
           <div className="categories">{legends}</div>
