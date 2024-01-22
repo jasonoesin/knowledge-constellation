@@ -3,14 +3,25 @@ import { AnimatePresence, motion } from "framer-motion";
 export const Tooltip = (props) => {
   const data = props.data;
 
+  console.log(data);
+
   if (data == null) return;
 
   const category = data.labels[0];
   const color = data.color;
 
+  const properties = Object.entries(data.properties).map(([key, value]) => (
+    <div className="" key={key}>
+      <strong className="bg-[#333336] rounded-full px-3 py-1 w-fit mr-2 h-fit">
+        {key}
+      </strong>
+      : {typeof value === "object" ? value.low : value}
+    </div>
+  ));
+
   return (
     <AnimatePresence>
-      {props.data && (
+      {data.id && (
         <motion.div
           key={"Tooltip"}
           initial={{ opacity: 0, scale: 0.5 }}
@@ -27,16 +38,7 @@ export const Tooltip = (props) => {
             {category}
           </div>
           <strong className="">Properties</strong>
-          <div className="flex gap-2 flex-col">
-            {Object.entries(data.properties).map(([key, value]) => (
-              <div className="">
-                <strong className="bg-[#333336] rounded-full px-3 py-1 w-fit mr-2 h-fit">
-                  {key}
-                </strong>
-                : {value}
-              </div>
-            ))}
-          </div>
+          <div className="flex gap-2 flex-col">{properties}</div>
         </motion.div>
       )}
     </AnimatePresence>

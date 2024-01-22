@@ -11,7 +11,6 @@ export function ForceGraph({ linksData, nodesData, onResults }) {
   const [tooltip, setTooltip] = useState();
 
   const handleSetTooltip = (obj) => {
-    console.log(obj);
     setTooltip(obj);
   };
 

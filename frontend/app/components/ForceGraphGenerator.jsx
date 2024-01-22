@@ -138,9 +138,9 @@ export function RunForceGraph(
     .attr("marker-end", "url(#arrowhead)");
 
   function handleMouseEnter(event, d) {
-    d.color = d3.select(this).select("circle").attr("fill");
-
-    handleSetTooltip(d);
+    const copyD = { ...d };
+    copyD.color = d3.select(this).select("circle").attr("fill");
+    handleSetTooltip(copyD);
   }
 
   function handleMouseLeave(event, d) {

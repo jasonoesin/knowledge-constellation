@@ -30,9 +30,7 @@ const Prompt = ({ onResults }) => {
       }
 
       const data = await response.json();
-      console.log(data);
       setDefinition(data);
-      // onResults(data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {

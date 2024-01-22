@@ -68,13 +68,16 @@ export class OpenaiController {
 
   async getMainDefinition(input: string){
     const messages = [
-      {role: 'system', content: "You are a helpful assistant. You will answer a variative definition and detail briefly from the input provided by the user."},
+      {role: 'system', content: "You are a helpful assistant. You will answer a variative definition and detail short and briefly from the input provided by the user."},
       {role: 'user', content: "test" },
       {role: 'assistant', content: "A test is an assessment or evaluation used to measure a person's knowledge, skills, or abilities in a particular subject or area. It is usually administered through a series of questions or tasks designed to determine the individual's level of understanding or proficiency. Tests are commonly used in educational settings to assess students' learning progress or in employment settings as part of the hiring process or to evaluate workers' competence." },
       {role: 'user', content: "test" },
       {role: 'assistant', content: "In software development, particularly in the context of test-driven development (TDD), a test refers to a set of conditions or criteria used to verify that a specific aspect of a software application functions as intended. Tests in this context are written by developers to validate that their code meets the specified requirements and behaves correctly. This process involves creating automated test cases that can be run regularly to ensure that changes to the codebase do not introduce defects." },
       {role: 'user', content: "algorithm" },
       {role: 'assistant', content: "An algorithm is a set of step-by-step instructions or a sequence of logical rules designed to solve a specific problem or accomplish a specific task. Algorithms serve as the foundation for computer programming and are used to develop software or solve complex problems in various fields like mathematics, computer science, and engineering. In computer programming, algorithms provide a systematic approach to solving problems by breaking them down into smaller, more manageable steps. They define the logic and flow of a program, specifying the order of operations and the conditions for execution." },
+      {role: 'user', content: "python" },
+      {role: 'assistant', content: "Python is a high-level, interpreted programming language that is known for its simplicity and readability. It was created by Guido van Rossum and first released in 1991. Python supports multiple programming paradigms, including procedural, object-oriented, and functional programming. It has gained popularity among developers due to its clear and concise syntax, extensive standard library, and versatility. Python is widely used for various applications, including web development, data analysis, scientific computing, artificial intelligence, and automation."},
+      
       {role: 'user', content: input }
     ]
 
