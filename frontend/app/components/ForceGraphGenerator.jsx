@@ -84,8 +84,8 @@ export function RunForceGraph(
   const zoom = d3
     .zoom()
     .translateExtent([
-      [-width / 2, -height / 2],
-      [width / 2, height / 2],
+      [(-width / 2) * 1.5, (-height / 2) * 1.5],
+      [(width / 2) * 1.5, (height / 2) * 1.5],
     ])
     .on("zoom", function (event) {
       d3.select(".nodes").attr("transform", event.transform);
@@ -94,12 +94,6 @@ export function RunForceGraph(
     });
 
   d3.select("svg").call(zoom);
-
-  function center() {
-    d3.select("svg")
-      .transition()
-      .call(zoom.translateTo, width / 2, height / 2);
-  }
 
   const linkGroup = svg.append("g").classed("links", true);
   const linkLabelGroup = svg.append("g").classed("link-labels", true);
