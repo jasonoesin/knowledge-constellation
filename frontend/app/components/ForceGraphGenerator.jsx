@@ -53,7 +53,7 @@ export function RunForceGraph(container, linksData, nodesData) {
     )
     .force("charge", d3.forceManyBody().strength(-5000))
     .force("x", d3.forceX(0))
-    .force("y", d3.forceY(-100).strength(0.175));
+    .force("y", d3.forceY(-100).strength(0.3));
 
   const svg = d3
     .select(container)
@@ -154,6 +154,8 @@ export function RunForceGraph(container, linksData, nodesData) {
     .attr("stroke-width", 0)
     .classed("text-[0.75rem]", true)
     .text((d) => {
+      if (!d.name) return null;
+
       const capitalizedName = d.name
         .split(" ")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
