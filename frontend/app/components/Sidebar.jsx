@@ -54,7 +54,7 @@ const Sidebar = ({ linksData, nodesData }) => {
 
         <div className="">
           <p>Nodes Relationships</p>
-          <div className="categories flex gap-2 flex-wrap gap-y-1.5">
+          <div className="categories flex gap-2 flex-wrap gap-y-1.5 text-[0.85rem]">
             {relationships}
           </div>
         </div>

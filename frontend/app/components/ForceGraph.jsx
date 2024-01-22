@@ -3,10 +3,23 @@ import { useEffect, useRef, useState } from "react";
 import { RunForceGraph } from "./ForceGraphGenerator";
 import styles from "../styles/forceGraph.module.css";
 import Sidebar from "./Sidebar";
+import { Tooltip } from "./Tooltip";
 
 export function ForceGraph({ linksData, nodesData }) {
   const containerRef = useRef(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [tooltip, setTooltip] = useState();
+
+  const handleSetTooltip = (title, description) => {
+    setTooltip({
+      title: title,
+      description: description,
+    });
+  };
+
+  const handleSetNoneTooltip = () => {
+    setTooltip();
+  };
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
@@ -59,6 +72,7 @@ export function ForceGraph({ linksData, nodesData }) {
         </svg>
       </div>
       {sidebarOpen && <Sidebar nodesData={nodesData} linksData={linksData} />}
+      {/* <Tooltip data={tooltip} /> */}
     </div>
   );
 }
