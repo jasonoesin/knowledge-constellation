@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Neo4jService } from './neo4j/neo4j.service';
 import { AuthGuard } from './auth/auth.guard';
@@ -9,7 +9,8 @@ export class AppController {
 
   @UseGuards(AuthGuard)
   @Get('graph')
-  async getGraph(): Promise<any[]> {
-    return this.neo4jService.getSchema();
+  async getGraph(@Req() request: Request): Promise<any[]> {
+    const username = request['user'].sub;
+    return this.neo4jService.getSchema(username);
   }
 }

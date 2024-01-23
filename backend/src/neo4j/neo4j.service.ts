@@ -29,9 +29,7 @@ export class Neo4jService {
     await this.driver.close();
   }
 
-  async importData(cypherQuery: string): Promise<void> {
-    const username = 'boba';
-
+  async importData(cypherQuery: string, username: string): Promise<void> {
     const replaced = cypherQuery.replace(
       'MERGE',
       '\nMERGE (graph)-[:CONTAINS]->',
@@ -57,9 +55,7 @@ export class Neo4jService {
     }
   }
 
-  async deleteData(): Promise<void> {
-    const username = 'boba';
-
+  async deleteData(username: string): Promise<void> {
     try {
       await this.runQuery(
         `
@@ -74,16 +70,12 @@ export class Neo4jService {
     }
   }
 
-  async getSchema(): Promise<any[]> {
-    const username = 'boba';
-
-    const cypherQuery = `MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[*]->(n)-[r]-(m) RETURN n, r, m`;
+  async getSchema(username: string): Promise<any[]> {
+    const cypherQuery = `MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[*]-(n)-[r]-(m) RETURN n, r, m`;
     return this.runQuery(cypherQuery, { username: username });
   }
 
-  async getCypherScript(): Promise<string> {
-    const username = 'boba';
-
+  async getCypherScript(username: string): Promise<string> {
     try {
       const result = await this.runQuery(`
       CALL apoc.export.cypher.query('

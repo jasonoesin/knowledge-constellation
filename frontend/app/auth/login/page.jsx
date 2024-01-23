@@ -33,8 +33,6 @@ const LoginPage = () => {
         credentials: "include",
       });
 
-      const data = await response.json();
-      console.log(data);
       router.push("/");
     } catch (error) {
       console.log("Login failed", error.message);

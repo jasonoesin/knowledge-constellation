@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { OpenaiService } from './openai.service';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -12,7 +12,8 @@ export class OpenaiController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Post('prompt')
-  async postPromptResults(@Body() payload: { keyword: string }) {
+  async postPromptResults(@Body() payload: { keyword: string }, @Req() request: Request) {
+    const username = request['user'].sub;
     const prompt = payload.keyword;
 
     const definition = await this.getMainDefinition(prompt);
@@ -23,13 +24,13 @@ export class OpenaiController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Post("prompt_confirm")
-  async postPromptConfirm(@Body() payload: { definition: string }){
-
+  async postPromptConfirm(@Body() payload: { definition: string }, @Req() request: Request){
+    const username = request['user'].sub;
     const definition = payload.definition;
 
     const cypherQuery = await this.getImportCypherQuery(definition);
 
-    await this.importData(cypherQuery.choices[0].message.content)
+    await this.importData(cypherQuery.choices[0].message.content, username)
 
     return cypherQuery;
   }
@@ -37,16 +38,18 @@ export class OpenaiController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Post('prompt_update')
-  async postPromptUpdateResults(@Body() payload: { definition: string }) {
+  async postPromptUpdateResults(@Body() payload: { definition: string }, @Req() request: Request) {
+    const username = request['user'].sub;
+
     const definition = payload.definition;
 
-    const cypherSchema = await this.neo4jService.getCypherScript();
+    const cypherSchema = await this.neo4jService.getCypherScript(username);
 
     const convertedCypherSchema = await this.convertCypherSchema(cypherSchema);
 
     const cypherQuery = await this.getUpdateCypherQuery(definition, convertedCypherSchema.choices[0].message.content);
 
-    await this.importData(cypherQuery.choices[0].message.content)
+    await this.importData(cypherQuery.choices[0].message.content, username)
 
     return cypherQuery;
   }
@@ -54,16 +57,18 @@ export class OpenaiController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Post("delete_graph")
-  async deleteGraph(){
-    await this.neo4jService.deleteData();
+  async deleteGraph(@Req() request: Request){
+    const username = request['user'].sub;
+
+    await this.neo4jService.deleteData(username);
 
     return {"message":"sucess"};
   }
 
-  async importData(cypherQuery : string): Promise<void> {
-    this.neo4jService.deleteData();
+  async importData(cypherQuery : string, username: string): Promise<void> {
+    this.neo4jService.deleteData(username);
 
-    await this.neo4jService.importData(cypherQuery);
+    await this.neo4jService.importData(cypherQuery,username);
   }
 
   async convertCypherSchema(input: string){
