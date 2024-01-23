@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Notify } from "@/app/components/Toast";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -33,9 +34,16 @@ const LoginPage = () => {
         credentials: "include",
       });
 
-      router.push("/");
+      if (response.ok) {
+        Notify("Login successfull !");
+        router.push("/");
+      } else {
+        Notify("Login failed !");
+      }
     } catch (error) {
-      console.log("Login failed", error.message);
+      console.log("Login failed !", error.message);
+      Notify(error.message);
+    } finally {
     }
   }
 

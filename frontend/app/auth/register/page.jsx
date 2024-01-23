@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Notify } from "@/app/components/Toast";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState("");
@@ -34,9 +35,15 @@ const RegisterPage = () => {
 
       const data = await response.json();
 
-      if (response.ok) router.push("/auth/login");
+      if (response.ok) {
+        router.push("/auth/login");
+        Notify("Register successfull !");
+      } else {
+        Notify("Register failed !");
+      }
     } catch (error) {
       console.log("Login failed", error.message);
+      Notify("Register failed !");
     }
   }
 

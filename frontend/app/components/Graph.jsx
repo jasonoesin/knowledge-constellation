@@ -19,7 +19,6 @@ export const DisplayGraph = ({ onPromptResults, handleRefresh }) => {
         });
 
         const result = await response.json();
-        console.log(result);
 
         setData(toGraphData(result));
         if (result.length == 0) {

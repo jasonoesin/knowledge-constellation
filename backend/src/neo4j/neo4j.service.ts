@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { promises } from 'dns';
 import neo4j, { Driver, Session } from 'neo4j-driver';
 
 @Injectable()
@@ -35,14 +34,10 @@ export class Neo4jService {
       '\nMERGE (graph)-[:CONTAINS]->',
     );
 
-    console.log("1." ,replaced)
-
     const updatedQuery = `
     MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph {name: $graphName})`.concat(
       replaced,
     );
-
-    console.log("2." ,updatedQuery)
 
     try {
       await this.runQuery(updatedQuery, {
@@ -59,7 +54,7 @@ export class Neo4jService {
     try {
       await this.runQuery(
         `
-        MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[*]->(n)-[r]-(m)
+        MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[*]-(n)-[r]-(m)
         DETACH DELETE n, r, m
       `,
         { username: username },
@@ -79,7 +74,7 @@ export class Neo4jService {
     try {
       const result = await this.runQuery(`
       CALL apoc.export.cypher.query('
-        MATCH (user:User {username: "${username}"})-[:OWNS]->(graph:Graph)-[*]->(n)-[r]-(m)
+        MATCH (user:User {username: "${username}"})-[:OWNS]->(graph:Graph)-[*]-(n)-[r]-(m)
         RETURN n, r, m',
         null, {
           streamStatements: true,

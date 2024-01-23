@@ -100,6 +100,11 @@ const Prompt = ({ graphState, setGraphState, onResults, handleRefresh }) => {
     }
   }, [graphState]);
 
+  const handlePromptAnotherKeyword = () => {
+    setDefinition(null);
+    setKeyword("");
+  };
+
   return (
     <AnimatePresence>
       <form className="!BACKGROUND w-full flex items-center fixed bottom-[2rem] justify-center pointer-events-none">
@@ -160,14 +165,35 @@ const Prompt = ({ graphState, setGraphState, onResults, handleRefresh }) => {
                     >
                       Generate another definition or detail
                     </button>
+                    <button
+                      className="w-fit px-4 bg-blue-950 rounded py-1.5"
+                      onClick={handlePromptAnotherKeyword}
+                    >
+                      Prompt another keyword
+                    </button>
                   </div>
                 ) : (
-                  <button
-                    className="w-fit px-4 bg-blue-950 rounded py-1.5"
-                    onClick={handleSaveDefinition}
-                  >
-                    Save knowledges to graph
-                  </button>
+                  <div className="flex gap-2 text-[0.9rem]">
+                    <button
+                      className="w-fit px-4 bg-blue-950 rounded py-1.5"
+                      onClick={handleSaveDefinition}
+                    >
+                      Save knowledges to graph
+                    </button>
+                    <button
+                      className="w-fit px-4 bg-blue-950 rounded py-1.5"
+                      onClick={handlePromptButton}
+                    >
+                      Generate another definition or detail
+                    </button>
+
+                    <button
+                      className="w-fit px-4 bg-blue-950 rounded py-1.5"
+                      onClick={handlePromptAnotherKeyword}
+                    >
+                      Prompt another keyword
+                    </button>
+                  </div>
                 )}
               </>
             ) : (

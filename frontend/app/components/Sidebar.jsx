@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { useState } from "react";
 import CircleLoading from "./CircleLoading";
 import { useRouter } from "next/navigation";
+import { Notify } from "./Toast";
 
 const Sidebar = ({ linksData, nodesData, onResults }) => {
   const [loading, setLoading] = useState(false);
@@ -67,8 +68,10 @@ const Sidebar = ({ linksData, nodesData, onResults }) => {
 
       onResults(data);
       handleRefresh();
+      Notify("Delete graph successfull !");
     } catch (error) {
       console.error("Error fetching data:", error);
+      Notify("Delete graph failed !");
     } finally {
       setLoading(false);
     }
@@ -85,8 +88,10 @@ const Sidebar = ({ linksData, nodesData, onResults }) => {
         credentials: "include",
       });
       router.push("/auth/login");
+      Notify("Logout successfull !");
     } catch (error) {
       console.error("Error log out:", error);
+      Notify("Logout failed !");
     }
   };
 
@@ -108,6 +113,8 @@ const Sidebar = ({ linksData, nodesData, onResults }) => {
           </div>
         </div>
       </div>
+
+      <div className="mb-4"></div>
 
       {loading ? (
         <CircleLoading />
