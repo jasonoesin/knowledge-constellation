@@ -37,13 +37,16 @@ export class Neo4jService {
       '\nMERGE (graph)-[:CONTAINS]->',
     );
 
+    console.log("1." ,replaced)
+
     const updatedQuery = `
     MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph {name: $graphName})`.concat(
       replaced,
     );
 
+    console.log("2." ,updatedQuery)
+
     try {
-      console.log(updatedQuery);
       await this.runQuery(updatedQuery, {
         username: username,
         graphName: `Graph_${username}`,
@@ -79,8 +82,6 @@ export class Neo4jService {
   }
 
   async getCypherScript(): Promise<string> {
-    const session: Session = this.driver.session();
-
     const username = 'boba';
 
     try {
@@ -93,8 +94,6 @@ export class Neo4jService {
           format: "plain",
           cypherFormat: "updateAll"
       })`);
-
-      console.log(result)
 
       return result[0].cypherStatements;
     } finally {

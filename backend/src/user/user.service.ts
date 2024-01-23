@@ -15,8 +15,6 @@ export class UserService {
       return null;
     }
 
-    console.log(result)
-
     const neo4jUser = result[0].u.properties;
 
     return { username: neo4jUser.username, password: neo4jUser.password };
