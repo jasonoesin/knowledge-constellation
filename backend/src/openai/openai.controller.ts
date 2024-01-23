@@ -43,7 +43,7 @@ export class OpenaiController {
   }
 
   async importData(cypherQuery : string): Promise<void> {
-    // this.neo4jService.deleteData();
+    this.neo4jService.deleteData();
 
     await this.neo4jService.importData(cypherQuery);
   }
@@ -98,6 +98,21 @@ export class OpenaiController {
       -[:HAS]->(:BuiltInComponents {name: "Keyboard"})
       -[:HAS]->(:BuiltInComponents {name: "Trackpad or mouse for user input"})
       -[:CAPABLE_OF]->(:Functionality {name: "Performing tasks and running software similar to a desktop computer"})` },
+
+      { role: 'user', content: `Unit testing is a software testing technique where individual components or units of a program are tested in isolation to verify their functionality. In unit testing, the focus is on testing the smallest units of code, such as functions or methods, to ensure that they work correctly. The goal of unit testing is to examine each unit of code in isolation and verify that it produces the expected output for a given set of inputs. This is typically achieved by creating test cases that cover various scenarios and edge cases. Unit tests are automated, which means they can be run repeatedly and easily as part of a continuous integration process. Unit testing helps identify bugs or issues early in the development cycle, enabling developers to fix them before they propagate to higher levels of testing. It also provides a form of documentation and serves as a safety net when refactoring or making changes to code, as it allows developers to quickly verify that the existing functionality has not been broken.` },
+      { role: "assistant", content: `MERGE (:TestingTechnique {name: "Unit testing"})
+      -[:VERIFIES_FUNCTIONALITY_OF]->(:ProgramComponents {name: "Individual components or units of a program"})
+      -[:VERIFIES]->(:Functionality {name: "Functionality of the units of code"})
+      -[:FOCUSES_ON]->(:CodeUnits {name: "Smallest units of code (functions or methods)"})
+      -[:ENSURES_PRODUCTION_OF]->(:ExpectedOutput {name: "Expected output for a given set of inputs"})
+      -[:ACHIEVED_BY]->(:CreationOf {name: "Creating test cases"})
+      -[:COVERS]->(:ScenariosAndEdgeCases {name: "Various scenarios and edge cases"})
+      -[:AUTOMATED]->(:Execution {name: "Repeating and easy execution as part of a continuous integration process"})
+      -[:HELPS_IDENTIFY]->(:BugsOrIssues {name: "Bugs or issues early in the development cycle"})
+      -[:ENABLES_DEVELOPERS_TO]->(:Fixing {name: "Fixing bugs before they propagate to higher levels of testing"})
+      -[:PROVIDES]->(:Documentation {name: "Form of documentation"})
+      -[:SERVES_AS]->(:SafetyNet {name: "Safety net when refactoring or making changes to code"})
+      -[:ALLOWS_DEVELOPERS_TO]->(:Verification {name: "Quickly verify existing functionality"})` },
 
 
       { role: 'user', content: definition},

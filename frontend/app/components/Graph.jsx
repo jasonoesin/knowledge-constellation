@@ -99,8 +99,6 @@ const toGraphData = (data) => {
     });
   });
 
-  console.log(Array.from(nodes), Array.from(links));
-
   return {
     nodes: Array.from(nodes),
     links: Array.from(links),

@@ -10,8 +10,8 @@ export class Neo4jService {
     const { NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD } = process.env;
 
     this.driver = neo4j.driver(
-        NEO4J_URI,
-        neo4j.auth.basic(NEO4J_USERNAME, NEO4J_PASSWORD)
+      NEO4J_URI,
+      neo4j.auth.basic(NEO4J_USERNAME, NEO4J_PASSWORD),
     );
   }
 
@@ -19,7 +19,7 @@ export class Neo4jService {
     const session: Session = this.driver.session();
     try {
       const result = await session.run(query, params);
-      return result.records.map(record => record.toObject());
+      return result.records.map((record) => record.toObject());
     } finally {
       await session.close();
     }
@@ -30,48 +30,49 @@ export class Neo4jService {
   }
 
   async importData(cypherQuery: string): Promise<void> {
-    // try {
-    //   await this.runQuery(cypherQuery);
-    // } catch (error) {
-    //   console.error('Error importing data:', error);
-    //   throw error;
-    // }
-    const username = "boba";
+    const username = 'boba';
 
-    const replaced = cypherQuery.replace("MERGE","\nMERGE (graph)-[:CONTAINS]->")
+    const replaced = cypherQuery.replace(
+      'MERGE',
+      '\nMERGE (graph)-[:CONTAINS]->',
+    );
 
     const updatedQuery = `
-    MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph {name: $graphName})`.concat(replaced)
+    MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph {name: $graphName})`.concat(
+      replaced,
+    );
 
     try {
-    await this.runQuery(updatedQuery, 
-    { 
-      username: username,
-      graphName: `Graph_${username}`
-    }
-    );
+      console.log(updatedQuery);
+      await this.runQuery(updatedQuery, {
+        username: username,
+        graphName: `Graph_${username}`,
+      });
     } catch (error) {
-    console.error('Error importing data:', error);
-    throw error;
+      console.error('Error importing data:', error);
+      throw error;
     }
   }
 
   async deleteData(): Promise<void> {
-    const username = "boba";
+    const username = 'boba';
 
     try {
-      await this.runQuery(`
+      await this.runQuery(
+        `
         MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[*]->(n)-[r]-(m)
         DETACH DELETE n, r, m
-      `, { username: username });
-      } catch (error) {
-        console.error('Error importing data:', error);
-        throw error;
-      }
+      `,
+        { username: username },
+      );
+    } catch (error) {
+      console.error('Error importing data:', error);
+      throw error;
+    }
   }
 
   async getSchema(): Promise<any[]> {
-    const username = "boba"
+    const username = 'boba';
 
     const cypherQuery = `MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[*]->(n)-[r]-(m) RETURN n, r, m`;
     return this.runQuery(cypherQuery, { username: username });
@@ -80,18 +81,23 @@ export class Neo4jService {
   async getCypherScript(): Promise<string> {
     const session: Session = this.driver.session();
 
-    try {
-      const result = await session.run(
-        `CALL apoc.export.cypher.all(null, {
-            streamStatements: true,
-            format: "plain",
-            cypherFormat: "updateAll"
-        });`
-      );
+    const username = 'boba';
 
-      return result.records[0].get('cypherStatements');
+    try {
+      const result = await this.runQuery(`
+      CALL apoc.export.cypher.query('
+        MATCH (user:User {username: "${username}"})-[:OWNS]->(graph:Graph)-[*]->(n)-[r]-(m)
+        RETURN n, r, m',
+        null, {
+          streamStatements: true,
+          format: "plain",
+          cypherFormat: "updateAll"
+      })`);
+
+      console.log(result)
+
+      return result[0].cypherStatements;
     } finally {
-      await session.close();
     }
   }
 }
