@@ -14,22 +14,18 @@ export const DisplayGraph = ({ onPromptResults, handleRefresh }) => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/graph");
-
-        if (!isMounted) {
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        const response = await fetch("http://localhost:3001/graph", {
+          credentials: "include",
+        });
 
         const result = await response.json();
+        console.log(result);
+
         setData(toGraphData(result));
         if (result.length == 0) {
           setGraphState(false);
         } else setGraphState(true);
-      } catch (err) {
+      } catch (error) {
         if (isMounted) {
           setError(err);
         }

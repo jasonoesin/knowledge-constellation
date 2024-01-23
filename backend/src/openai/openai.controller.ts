@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { OpenaiService } from './openai.service';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('openai')
 export class OpenaiController {
@@ -8,6 +9,8 @@ export class OpenaiController {
     private readonly openaiService: OpenaiService,
     private readonly neo4jService: Neo4jService,) {}
 
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   @Post('prompt')
   async postPromptResults(@Body() payload: { keyword: string }) {
     const prompt = payload.keyword;
@@ -17,6 +20,8 @@ export class OpenaiController {
     return definition;
   }
 
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   @Post("prompt_confirm")
   async postPromptConfirm(@Body() payload: { definition: string }){
 
@@ -29,6 +34,8 @@ export class OpenaiController {
     return cypherQuery;
   }
 
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   @Post('prompt_update')
   async postPromptUpdateResults(@Body() payload: { definition: string }) {
     const definition = payload.definition;
@@ -44,17 +51,19 @@ export class OpenaiController {
     return cypherQuery;
   }
 
-  async importData(cypherQuery : string): Promise<void> {
-    this.neo4jService.deleteData();
-
-    await this.neo4jService.importData(cypherQuery);
-  }
-
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   @Post("delete_graph")
   async deleteGraph(){
     await this.neo4jService.deleteData();
 
     return {"message":"sucess"};
+  }
+
+  async importData(cypherQuery : string): Promise<void> {
+    this.neo4jService.deleteData();
+
+    await this.neo4jService.importData(cypherQuery);
   }
 
   async convertCypherSchema(input: string){

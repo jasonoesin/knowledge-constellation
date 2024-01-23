@@ -1,41 +1,56 @@
-// auth.controller.ts
-import { Controller, Post, Body, UnauthorizedException, HttpCode, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, HttpCode, HttpException, HttpStatus, Res } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
+import { Response, response } from 'express';
+
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
+
   ) {}
 
+  @HttpCode(HttpStatus.OK)
   @Post('register')
-  async register(@Body() body: { username: string, password: string }): Promise<{ message: string, data: Object }> {
+  async register(@Body() body: { username: string, password: string }, @Res() res: Response): Promise<any> {
     const username = body.username;
     const password = body.password;
 
-    const existingUser = await this.userService.findByUsername(username);
-    if (existingUser) {
-      throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
-    }
-
     const data = await this.authService.registerUser(username, password);
 
-    return { message: 'User registered successfully', data : data };
+    return res.json({
+      message: 'Register successful',
+      success: true,
+    });
   }
 
-//   @Post('login')
-//   @HttpCode(200)
-//   async login(@Body() body: { username: string, password: string }): Promise<{ token: string }> {
-//     const { username, password } = body;
+  @HttpCode(HttpStatus.OK)
+  @Post('login')
+  async login(@Body() body: { username: string, password: string }, @Res() res: Response): Promise<any> {
+    const username = body.username;
+    const password = body.password;
 
-//     const user = await this.authService.validateUser(username, password);
-//     if (!user) {
-//       throw new UnauthorizedException('Invalid credentials');
-//     }
+    const data = await this.authService.loginUser(username, password);
 
-//     const token = await this.authService.generateToken(user);
-//     return { token };
-//   }
+    res.cookie('token', data.access_token, { httpOnly: true, path: "/"});
+
+    return res.json({
+      message: 'Login successful',
+      success: true,
+    });
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  async logout(@Res() res: Response): Promise<any> {  
+    res.cookie('token', '', { httpOnly: true,path: "/", expires: new Date(0) });
+
+    return res.json({
+      message: 'Logout successful',
+      success: true,
+    });
+  }
+
 }

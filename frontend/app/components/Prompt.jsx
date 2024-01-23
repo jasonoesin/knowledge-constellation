@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CircleLoading from "./CircleLoading";
 import { AnimatePresence, motion } from "framer-motion";
-import GraphPage from "../page";
 
 const Prompt = ({ graphState, setGraphState, onResults, handleRefresh }) => {
   const [definition, setDefinition] = useState(null);
@@ -18,19 +17,17 @@ const Prompt = ({ graphState, setGraphState, onResults, handleRefresh }) => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3001/openai/prompt", {
+      const result = await fetch("http://localhost:3001/openai/prompt", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ keyword: keyword }),
+        credentials: "include",
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      const data = await result.json();
 
-      const data = await response.json();
       setDefinition(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -44,7 +41,7 @@ const Prompt = ({ graphState, setGraphState, onResults, handleRefresh }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(
+      const result = await fetch(
         "http://localhost:3001/openai/prompt_confirm",
         {
           method: "POST",
@@ -54,14 +51,12 @@ const Prompt = ({ graphState, setGraphState, onResults, handleRefresh }) => {
           body: JSON.stringify({
             definition: definition.choices[0].message.content,
           }),
+          credentials: "include",
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      const data = await result.json();
 
-      const data = await response.json();
       onResults(data);
       setGraphState(true);
     } catch (error) {
@@ -76,24 +71,19 @@ const Prompt = ({ graphState, setGraphState, onResults, handleRefresh }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:3001/openai/prompt_update",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            definition: definition.choices[0].message.content,
-          }),
-        }
-      );
+      const result = await fetch("http://localhost:3001/openai/prompt_update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          definition: definition.choices[0].message.content,
+        }),
+        credentials: "include",
+      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      const data = await result.json();
 
-      const data = await response.json();
       onResults(data);
       setGraphState(true);
     } catch (error) {

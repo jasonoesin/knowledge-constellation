@@ -2,9 +2,11 @@
 import * as d3 from "d3";
 import { useState } from "react";
 import CircleLoading from "./CircleLoading";
+import { useRouter } from "next/navigation";
 
 const Sidebar = ({ linksData, nodesData, onResults }) => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -42,36 +44,49 @@ const Sidebar = ({ linksData, nodesData, onResults }) => {
 
   const relationships = Object.entries(relationMap).map(
     ([relationship, data]) => (
-      <div className="bg-gray-500 rounded px-2">{`${relationship} (${data.count})`}</div>
+      <div
+        key={relationship}
+        className="bg-gray-500 rounded px-2"
+      >{`${relationship} (${data.count})`}</div>
     )
   );
 
   const handleDeleteGraph = async () => {
     setLoading(true);
-
     try {
-      const response = await fetch(
-        "http://localhost:3001/openai/delete_graph",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({}),
-        }
-      );
+      const result = await fetch("http://localhost:3001/openai/delete_graph", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+        credentials: "include",
+      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      const data = await result.json();
 
-      const data = await response.json();
       onResults(data);
       handleRefresh();
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:3001/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+        credentials: "include",
+      });
+      router.push("/auth/login");
+    } catch (error) {
+      console.error("Error log out:", error);
     }
   };
 
@@ -97,11 +112,20 @@ const Sidebar = ({ linksData, nodesData, onResults }) => {
       {loading ? (
         <CircleLoading />
       ) : (
-        <div
-          onClick={handleDeleteGraph}
-          className="fixed right-2 bottom-2 bg-blue-950 rounded px-2 py-1 cursor-pointer"
-        >
-          Delete Graph
+        <div className="fixed right-4 bottom-4 flex flex-row gap-2">
+          <div
+            onClick={handleLogout}
+            className=" bg-blue-950 rounded px-4 py-1 cursor-pointer"
+          >
+            Log Out
+          </div>
+
+          <div
+            onClick={handleDeleteGraph}
+            className=" bg-blue-950 rounded px-4 py-1 cursor-pointer"
+          >
+            Delete Graph
+          </div>
         </div>
       )}
     </div>
