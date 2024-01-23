@@ -39,11 +39,13 @@ export class Neo4jService {
   }
 
   async deleteData(): Promise<void> {
+    const username = "boba";
+
     try {
-        await this.runQuery(`
-        MATCH (n)
-        DETACH DELETE n
-        `);
+      await this.runQuery(`
+        MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[:CONTAINS]->(node:Node)
+        DETACH DELETE node, graph
+      `, { username: username });
       } catch (error) {
         console.error('Error importing data:', error);
         throw error;
