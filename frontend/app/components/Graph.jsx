@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Prompt from "./Prompt";
 import { ForceGraph } from "./ForceGraph";
 
-export const DisplayGraph = ({ onPromptResults }) => {
+export const DisplayGraph = ({ onPromptResults, handleRefresh }) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [graphState, setGraphState] = useState(false);
@@ -26,8 +26,9 @@ export const DisplayGraph = ({ onPromptResults }) => {
 
         const result = await response.json();
         setData(toGraphData(result));
-        if (result.length == 0) setGraphState(false);
-        else setGraphState(true);
+        if (result.length == 0) {
+          setGraphState(false);
+        } else setGraphState(true);
       } catch (err) {
         if (isMounted) {
           setError(err);
@@ -49,12 +50,14 @@ export const DisplayGraph = ({ onPromptResults }) => {
           nodesData={data.nodes}
           linksData={data.links}
           onResults={onPromptResults}
+          handleRefresh={handleRefresh}
         />
       )}
       <Prompt
         setGraphState={setGraphState}
         graphState={graphState}
         onResults={onPromptResults}
+        handleRefresh={handleRefresh}
       />
     </>
   );
@@ -62,7 +65,6 @@ export const DisplayGraph = ({ onPromptResults }) => {
 
 function hasObjectWithId(set, targetId) {
   for (const obj of set) {
-    console.log(obj.id, targetId);
     if (obj.id === targetId) {
       return true;
     }

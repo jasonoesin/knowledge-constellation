@@ -67,6 +67,7 @@ const Sidebar = ({ linksData, nodesData, onResults }) => {
 
       const data = await response.json();
       onResults(data);
+      handleRefresh();
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {

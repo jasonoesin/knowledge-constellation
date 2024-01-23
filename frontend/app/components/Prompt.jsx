@@ -3,7 +3,7 @@ import CircleLoading from "./CircleLoading";
 import { AnimatePresence, motion } from "framer-motion";
 import GraphPage from "../page";
 
-const Prompt = ({ graphState, setGraphState, onResults }) => {
+const Prompt = ({ graphState, setGraphState, onResults, handleRefresh }) => {
   const [definition, setDefinition] = useState(null);
   const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -102,6 +102,13 @@ const Prompt = ({ graphState, setGraphState, onResults }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (graphState == false) {
+      setDefinition(null);
+      setKeyword("");
+    }
+  }, [graphState]);
 
   return (
     <AnimatePresence>

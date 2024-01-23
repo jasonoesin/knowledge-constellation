@@ -5,7 +5,7 @@ import styles from "../styles/forceGraph.module.css";
 import Sidebar from "./Sidebar";
 import { Tooltip } from "./Tooltip";
 
-export function ForceGraph({ linksData, nodesData, onResults }) {
+export function ForceGraph({ linksData, nodesData, onResults, handleRefresh }) {
   const containerRef = useRef(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [tooltip, setTooltip] = useState();
@@ -75,6 +75,7 @@ export function ForceGraph({ linksData, nodesData, onResults }) {
           nodesData={nodesData}
           linksData={linksData}
           onResults={onResults}
+          handleRefresh={handleRefresh}
         />
       )}
       <Tooltip data={tooltip} />
