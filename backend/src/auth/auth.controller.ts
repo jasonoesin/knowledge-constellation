@@ -1,5 +1,5 @@
 // auth.controller.ts
-import { Controller, Post, Body, UnauthorizedException, HttpCode } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, HttpCode, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 
@@ -11,19 +11,18 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  @HttpCode(200)
-  async register(@Body() body: { username: string, password: string }): Promise<{ message: string }> {
+  async register(@Body() body: { username: string, password: string }): Promise<{ message: string, data: Object }> {
     const username = body.username;
     const password = body.password;
 
     const existingUser = await this.userService.findByUsername(username);
     if (existingUser) {
-      throw new UnauthorizedException('Username is already taken');
+      throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
     }
 
-    await this.authService.registerUser(username, password);
+    const data = await this.authService.registerUser(username, password);
 
-    return { message: 'User registered successfully' };
+    return { message: 'User registered successfully', data : data };
   }
 
 //   @Post('login')
