@@ -30,11 +30,29 @@ export class Neo4jService {
   }
 
   async importData(cypherQuery: string): Promise<void> {
+    // try {
+    //   await this.runQuery(cypherQuery);
+    // } catch (error) {
+    //   console.error('Error importing data:', error);
+    //   throw error;
+    // }
+    const username = "boba";
+
+    const replaced = cypherQuery.replace("MERGE","\nMERGE (graph)-[:CONTAINS]->")
+
+    const updatedQuery = `
+    MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph {name: $graphName})`.concat(replaced)
+
     try {
-      await this.runQuery(cypherQuery);
+    await this.runQuery(updatedQuery, 
+    { 
+      username: username,
+      graphName: `Graph_${username}`
+    }
+    );
     } catch (error) {
-      console.error('Error importing data:', error);
-      throw error;
+    console.error('Error importing data:', error);
+    throw error;
     }
   }
 
@@ -43,8 +61,8 @@ export class Neo4jService {
 
     try {
       await this.runQuery(`
-        MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[:CONTAINS]->(node:Node)
-        DETACH DELETE node, graph
+        MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[*]->(n)-[r]-(m)
+        DETACH DELETE n, r, m
       `, { username: username });
       } catch (error) {
         console.error('Error importing data:', error);
@@ -53,8 +71,10 @@ export class Neo4jService {
   }
 
   async getSchema(): Promise<any[]> {
-    const cypherQuery = `MATCH (n)-[r]-(m) RETURN n, r, m`;
-    return this.runQuery(cypherQuery);
+    const username = "boba"
+
+    const cypherQuery = `MATCH (user:User {username: $username})-[:OWNS]->(graph:Graph)-[*]->(n)-[r]-(m) RETURN n, r, m`;
+    return this.runQuery(cypherQuery, { username: username });
   }
 
   async getCypherScript(): Promise<string> {

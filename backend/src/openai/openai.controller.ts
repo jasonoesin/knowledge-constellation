@@ -43,7 +43,7 @@ export class OpenaiController {
   }
 
   async importData(cypherQuery : string): Promise<void> {
-    this.neo4jService.deleteData();
+    // this.neo4jService.deleteData();
 
     await this.neo4jService.importData(cypherQuery);
   }

@@ -60,53 +60,49 @@ export const DisplayGraph = ({ onPromptResults }) => {
   );
 };
 
+function hasObjectWithId(set, targetId) {
+  for (const obj of set) {
+    console.log(obj.id, targetId);
+    if (obj.id === targetId) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const toGraphData = (data) => {
-  const nodes = data.map((obj) => ({
-    id: obj.n.elementId,
-    labels: obj.n.labels,
-    properties: obj.n.properties,
-    name: obj.n.properties.name,
-  }));
+  const nodes = new Set();
+  const links = new Set();
 
-  const links = data.map((obj) => ({
-    name: obj.r.type,
-    source: obj.r.startNodeElementId,
-    target: obj.r.endNodeElementId,
-    distance: obj.r.type.length * 10,
-  }));
+  data.forEach((obj) => {
+    if (!hasObjectWithId(nodes, obj.n.elementId))
+      nodes.add({
+        id: obj.n.elementId,
+        labels: obj.n.labels,
+        properties: obj.n.properties,
+        name: obj.n.properties.name,
+      });
 
-  const removeDuplicateNodes = (nodes) => {
-    const uniqueNodes = [];
-    const nodeIds = new Set();
+    if (!hasObjectWithId(nodes, obj.m.elementId))
+      nodes.add({
+        id: obj.m.elementId,
+        labels: obj.m.labels,
+        properties: obj.m.properties,
+        name: obj.m.properties.name,
+      });
 
-    nodes.forEach((node) => {
-      if (!nodeIds.has(node.id)) {
-        uniqueNodes.push(node);
-        nodeIds.add(node.id);
-      }
+    links.add({
+      name: obj.r.type,
+      source: obj.r.startNodeElementId,
+      target: obj.r.endNodeElementId,
+      distance: obj.r.type.length * 10,
     });
+  });
 
-    return uniqueNodes;
-  };
-
-  const removeDuplicateLinks = (links) => {
-    const uniqueLinks = [];
-    const linkSet = new Set();
-
-    links.forEach((link) => {
-      const key = `${link.source}-${link.target}`;
-
-      if (!linkSet.has(key)) {
-        uniqueLinks.push(link);
-        linkSet.add(key);
-      }
-    });
-
-    return uniqueLinks;
-  };
+  console.log(Array.from(nodes), Array.from(links));
 
   return {
-    nodes: removeDuplicateNodes(nodes),
-    links: removeDuplicateLinks(links),
+    nodes: Array.from(nodes),
+    links: Array.from(links),
   };
 };

@@ -113,7 +113,7 @@ const Prompt = ({ graphState, setGraphState, onResults }) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2 }}
             exit={{ opacity: 0 }}
-            className="bg-[#1c1f21] px-4 py-4 rounded-xl min-w-[24rem] max-w-[50rem] h-fit pointer-events-auto flex flex-col gap-3 shadow-2xl relative"
+            className="bg-[#1c1f21] px-4 py-4 rounded-xl min-w-[24rem] max-w-[48rem] h-fit pointer-events-auto flex flex-col gap-3 shadow-2xl relative"
           >
             <div
               className="absolute top-4 right-4 cursor-pointer"
