@@ -32,6 +32,7 @@
  - Replace the placeholder values (e.g., 'example') in the environment variables with your actual configuration.
  - Ensure that Node.js and npm are installed on your machine.
  - The backend service will be available at the specified endpoint after successful startup.
+ - System requirements are shown on package-lock.json file.
 
 ## Frontend (Next.js) Installation
 
@@ -50,3 +51,4 @@
 
 Additional Information:
 - The frontend development server will be available at http://localhost:3000.
+- System requirements are shown on package-lock.json file.
