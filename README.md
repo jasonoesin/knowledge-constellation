@@ -23,9 +23,9 @@
    MODEL_DEPLOYMENT_NAME = example // LLM Model Name
    JWT_SECRET=example // JWT Secrets
    JWT_EXPIRES=example // JWT Expires
-4. Start the backend service.
+4. Start the backend development service.
    ```bash
-   npm run start
+   npm run start:dev
 
  Additional Information:
  - Make sure your Neo4j Graph Database is running and accessible with the provided credentials and URI.
